@@ -13,10 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import br.com.leangua.ponto.controller.form.PontoForm;
+import br.com.leangua.ponto.dto.PontoDto;
 import br.com.leangua.ponto.model.Ponto;
 import br.com.leangua.ponto.model.Usuario;
 import br.com.leangua.ponto.repository.PontoRepository;
 import br.com.leangua.ponto.repository.UsuarioRepository;
+import br.com.leangua.ponto.service.PontoService;
 
 @RestController
 @RequestMapping("/usuarios/{idUsuario}/ponto")
@@ -28,9 +30,12 @@ public class PontoContoller {
 	@Autowired
 	PontoRepository pontoRepository;
 	
+	@Autowired
+	PontoService pontoService;
+	
 	@GetMapping("/listar")
-	public Iterable<Ponto> listar(@PathVariable Long idUsuario) {
-		return pontoRepository.findAllByUsuario_id(idUsuario);
+	public PontoDto listar(@PathVariable Long idUsuario) {	
+		return pontoService.somarHorasTrabalhadas(idUsuario);
 	}
 	
 	@PostMapping("/registrar")
