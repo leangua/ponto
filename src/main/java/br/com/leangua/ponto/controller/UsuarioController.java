@@ -2,6 +2,8 @@ package br.com.leangua.ponto.controller;
 
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import br.com.leangua.ponto.controller.form.UsuarioForm;
 import br.com.leangua.ponto.model.Usuario;
@@ -22,7 +23,7 @@ import br.com.leangua.ponto.service.UsuarioService;
 
 @RestController
 @RequestMapping("/usuarios")
-public class UsuariosController {
+public class UsuarioController {
 	
 	@Autowired
 	UsuarioRepository usuarioRepository;
@@ -37,19 +38,18 @@ public class UsuariosController {
 	
 	@PostMapping("/cadastrar")
 	@ResponseStatus(code = HttpStatus.CREATED)
-	public Usuario cadastrar(@RequestBody UsuarioForm form, UriComponentsBuilder uriBuilder) {
-		Usuario usuario = form.converter();
-		return usuarioRepository.save(usuario);
+	public Usuario cadastrar(@Valid @RequestBody UsuarioForm form) {
+		return usuarioService.criar(form);
 	}
 	
 	@GetMapping("/{id}")
-	public Optional<Usuario> busca(@PathVariable Long id){
-		Optional<Usuario> usuarios = usuarioService.buscar(id);
-		return usuarios;
+	public Optional<Usuario> busca(@PathVariable String id){
+		Optional<Usuario> usuario = usuarioService.buscar(id);
+		return usuario;
 	}
 	
 	@PutMapping("/{id}/atualizar")
-	public void atualizar(@PathVariable Long id, @RequestBody UsuarioForm usuario) {
+	public void atualizar(@PathVariable String id, @Valid @RequestBody UsuarioForm usuario) {
 		Optional<Usuario> optional = usuarioService.buscar(id);
 
 		if (!optional.isPresent()) {
@@ -58,6 +58,5 @@ public class UsuariosController {
 
 		usuarioService.atualizar(id, usuario);
 	}
-
 	
 }

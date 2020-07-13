@@ -1,13 +1,23 @@
 package br.com.leangua.ponto.controller.form;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
+
 import br.com.leangua.ponto.model.Usuario;
 
 public class UsuarioForm {
 
+	@NotNull 
+	@NotEmpty
 	private String nome;
-	private String cpf;
+	@NotNull
+	@NotEmpty
+	private String cpf; 
+	@NotNull
+	@NotEmpty
 	private String email;
-	
+	 
 	
 	public String getNome() {
 		return nome;

@@ -1,9 +1,10 @@
 package br.com.leangua.ponto.model;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,7 +13,8 @@ import javax.persistence.ManyToOne;
 @Entity
 public class Ponto {
 
-	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Id 
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private LocalDateTime dataRegistro = LocalDateTime.now();
 	private TipoBatidaPonto tipoBatida;

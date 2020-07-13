@@ -15,15 +15,21 @@ public class UsuarioService {
 	@Autowired
 	private UsuarioRepository usuarioRepository;
 	
-	
-	public Optional<Usuario> buscar(Long id) {
-		return usuarioRepository.findById(id);
+	public Usuario criar(UsuarioForm usuarioForm) {
+		Usuario usuario = usuarioForm.converter();
+		return usuarioRepository.save(usuario);
 	}
+	
+	public Optional<Usuario> buscar(String id) {
+		Long idLong = Long.parseLong(id);
+		return usuarioRepository.findById(idLong);
+	}
+ 
 
-
-	public void atualizar(Long id, UsuarioForm usuarioForm) {
+	public void atualizar(String id, UsuarioForm usuarioForm) {
 		
-		Optional<Usuario> usuarioOptional = usuarioRepository.findById(id);
+		Long idLong = Long.parseLong(id);
+		Optional<Usuario> usuarioOptional = usuarioRepository.findById(idLong);
 		
 		Usuario usuario = usuarioOptional.get();
 		

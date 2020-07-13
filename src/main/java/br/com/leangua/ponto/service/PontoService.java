@@ -7,8 +7,11 @@ import java.util.Iterator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.com.leangua.ponto.controller.form.PontoForm;
 import br.com.leangua.ponto.dto.PontoDto;
+import br.com.leangua.ponto.exception.ValidacaoException;
 import br.com.leangua.ponto.model.Ponto;
+import br.com.leangua.ponto.model.TipoBatidaPonto;
 import br.com.leangua.ponto.repository.PontoRepository;
 import br.com.leangua.ponto.repository.UsuarioRepository;
 
@@ -17,38 +20,57 @@ public class PontoService {
 
 	@Autowired
 	PontoRepository pontoRepository;
-	
+	 
 	@Autowired
 	UsuarioRepository usuarioRepository;
 	
-	Duration duracao = Duration.ZERO;
-	LocalDateTime registroEntrada;
-	boolean periodoEmAberto = false;
+	private Duration duracao;
+	private LocalDateTime registroEntrada;
+	private boolean periodoEmAberto;
+	private TipoBatidaPonto ultimoTipoBatida;
 
 	public PontoDto somarHorasTrabalhadas(Long idUsuario) {
 		
 		Iterable<Ponto> registrosPonto = pontoRepository.findAllByUsuario_id(idUsuario);
 		
 		Iterator<Ponto> iterator = registrosPonto.iterator();
+		
+		periodoEmAberto = false;
+		duracao = Duration.ZERO;
 	
 		while (iterator.hasNext()) {
-			System.out.println("periodo em aberto: " + periodoEmAberto);
 			if (!periodoEmAberto) {
-				System.out.println("gravando entrada");
 				registroEntrada = iterator.next().getDataRegistro();
 				periodoEmAberto = true;
 			} else  {
-				System.out.println("gravando saida");
 				duracao = duracao.plus(Duration.between(registroEntrada, iterator.next().getDataRegistro()));
 				periodoEmAberto = false;
 			}
 
 		}		
 		
-		System.out.println("Total trabalhado em horas: " + duracao.toHours());
-		System.out.println("Total trabalhado em minutos: " + duracao.toMinutes());
-		System.out.println("Total trabalhado em milisegundos: " + duracao.toMillis());
-		
 		return new PontoDto(registrosPonto, duracao.toHours(), duracao.toMinutes());
+	}
+
+	public void validaRegistro(String idUsuario, PontoForm pontoForm) { 
+		
+		Long idLong = Long.parseLong(idUsuario);
+		Iterable<Ponto> registrosPonto = pontoRepository.findAllByUsuario_id(idLong);
+
+		Iterator<Ponto> iterator = registrosPonto.iterator();
+		
+		if (!iterator.hasNext()) {
+			if (pontoForm.getTipoBatida().toString() != "ENTRADA") {
+				throw new ValidacaoException("tipoBatida", "O primeiro registro deve ser ENTRADA");
+			}
+		} else {
+			while (iterator.hasNext()){
+				ultimoTipoBatida = iterator.next().getTipoBatida();
+			}
+			if (ultimoTipoBatida.toString() == pontoForm.getTipoBatida().toString()) {
+				throw new ValidacaoException("tipoBatida", "Entrada/Saida incorreto");
+			} 
+		}
+		
 	}
 }
