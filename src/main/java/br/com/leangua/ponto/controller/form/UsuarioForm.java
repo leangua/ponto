@@ -38,7 +38,4 @@ public class UsuarioForm {
 		this.email = email;
 	}
 	
-	public Usuario converter() {
-		return new Usuario(nome, cpf, email); 
-	}
 }

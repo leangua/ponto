@@ -16,7 +16,8 @@ public class UsuarioService {
 	private UsuarioRepository usuarioRepository;
 	
 	public Usuario criar(UsuarioForm usuarioForm) {
-		Usuario usuario = usuarioForm.converter();
+		Usuario usuario = new Usuario(usuarioForm.getNome(), usuarioForm.getCpf(), usuarioForm.getEmail());
+//		Usuario usuario = usuarioForm.converter();
 		return usuarioRepository.save(usuario);
 	}
 	
@@ -37,8 +38,7 @@ public class UsuarioService {
 		usuario.setCpf(usuarioForm.getCpf());
 		usuario.setEmail(usuarioForm.getEmail());
 		
-		usuarioRepository.save(usuario);
-		
+		usuarioRepository.save(usuario);	
 	}
 
 }

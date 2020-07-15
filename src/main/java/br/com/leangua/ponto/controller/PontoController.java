@@ -28,7 +28,7 @@ import br.com.leangua.ponto.service.UsuarioService;
 public class PontoController {
 	
 	@Autowired
-	UsuarioService usuarioRepository;
+	UsuarioService usuarioService;
 	
 	@Autowired
 	PontoRepository pontoRepository;
@@ -44,7 +44,7 @@ public class PontoController {
 	@PostMapping("/registrar")
 	@ResponseStatus(code = HttpStatus.CREATED)
 	public Ponto registrar(@PathVariable String idUsuario, @Valid @RequestBody PontoForm pontoForm) {
-		Optional<Usuario> optional = usuarioRepository.buscar(idUsuario);
+		Optional<Usuario> optional = usuarioService.buscar(idUsuario);
 		
 		if(!optional.isPresent()) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
