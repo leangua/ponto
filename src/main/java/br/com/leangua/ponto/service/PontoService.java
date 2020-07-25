@@ -24,12 +24,12 @@ public class PontoService {
 	@Autowired
 	UsuarioRepository usuarioRepository;
 	
-	private Duration duracao;
-	private LocalDateTime registroEntrada;
-	private boolean periodoEmAberto;
-	private TipoBatidaPonto ultimoTipoBatida;
 
 	public PontoDto somarHorasTrabalhadas(Long idUsuario) {
+		
+		Duration duracao;
+		LocalDateTime registroEntrada = null;
+		boolean periodoEmAberto;	
 		
 		Iterable<Ponto> registrosPonto = pontoRepository.findAllByUsuario_id(idUsuario);
 		
@@ -53,6 +53,8 @@ public class PontoService {
 	}
 
 	public void validaRegistro(String idUsuario, PontoForm pontoForm) { 
+		
+		TipoBatidaPonto ultimoTipoBatida = null;	
 		
 		Long idLong = Long.parseLong(idUsuario);
 		Iterable<Ponto> registrosPonto = pontoRepository.findAllByUsuario_id(idLong);

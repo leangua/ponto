@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import br.com.leangua.ponto.controller.form.UsuarioForm;
+import br.com.leangua.ponto.dto.UsuarioDto;
 import br.com.leangua.ponto.model.Usuario;
 import br.com.leangua.ponto.repository.UsuarioRepository;
 import br.com.leangua.ponto.service.UsuarioService;
@@ -43,9 +44,16 @@ public class UsuarioController {
 	}
 	
 	@GetMapping("/{id}")
-	public Optional<Usuario> busca(@PathVariable String id){
-		Optional<Usuario> usuario = usuarioService.buscar(id);
-		return usuario;
+	public UsuarioDto busca(@PathVariable String id){
+		Optional<Usuario> optional = usuarioService.buscar(id);
+		
+		if (!optional.isPresent()) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+		}
+		
+		Usuario usuario = optional.get();
+		
+		return new UsuarioDto(usuario.getNome(), usuario.getCpf(), usuario.getEmail(), usuario.getDataDeCadastro());
 	}
 	
 	@PutMapping("/{id}/atualizar")
